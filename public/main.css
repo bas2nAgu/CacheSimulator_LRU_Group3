@@ -19,6 +19,7 @@ main {
     background-color: #04522d;
     padding: 20px; 
     margin: 0; 
+    color: white;
 }
 
 .header_1 {
@@ -46,4 +47,13 @@ main {
     font-weight: bold;
     font-style: normal;
     font-size: 150%;
+}
+
+
+input, button {
+    margin: 5px;
+}
+
+.result-display {
+    margin-top: 20px;
 }
