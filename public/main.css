@@ -1,0 +1,49 @@
+body {
+    border: none !important;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    height: 50px;
+    border: none !important;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    width: 100%; 
+    height: auto;
+    min-height: calc(100vh - 55px);
+    box-sizing: border-box; 
+    background-color: #04522d;
+    padding: 20px; 
+    margin: 0; 
+}
+
+.header_1 {
+    margin-top: 5px;
+    height: 50px;
+    width: 100%; 
+    background-color: white;
+    box-shadow: 0px 4px 5px -4px #C1ACBA;
+    display: flex;
+    align-items: center;
+}
+
+.header-logo {
+    margin-left: 10px;
+    width: 60px;
+    height: 46px;
+    background-image: url('Memory.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.header-text {
+    font-family: "Source Code Pro", monospace;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+    font-size: 150%;
+}
