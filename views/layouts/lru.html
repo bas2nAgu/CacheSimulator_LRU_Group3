@@ -3,87 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LRU Cache</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        input, button {
-            margin: 5px;
-        }
-        .cache-display {
-            margin-top: 20px;
-        }
-    </style>
+    <title>Cache Memory Simulator</title>
+    <link rel="stylesheet" href="./styles/lru-cache.css">
 </head>
 <body>
-    <h1>LRU Cache</h1>
+    <h1>Cache Memory Simulator</h1>
     <div>
-        <label for="cache-size">Cache Size:</label>
-        <input type="number" id="cache-size" value="4" min="1">
-        <button onclick="initializeCache()">Initialize Cache</button>
+        <label for="block-size">Block Size (words):</label>
+        <input type="number" id="block-size" value="4" min="1">
     </div>
     <div>
-        <label for="cache-value">Refer Value:</label>
-        <input type="number" id="cache-value">
-        <button onclick="referValue()">Refer</button>
+        <label for="mm-size">MM Size (blocks):</label>
+        <input type="number" id="mm-size" value="256" min="1">
     </div>
-    <div class="cache-display">
-        <h2>Cache Content</h2>
-        <pre id="cache-content"></pre>
+    <div>
+        <label for="cache-size">Cache Size (blocks):</label>
+        <input type="number" id="cache-size" value="16" min="1">
+    </div>
+    <div>
+        <label for="program-flow">Program Flow (comma-separated words):</label>
+        <input type="text" id="program-flow" value="0,1,2,3,4,5,6,7,8,9,10">
+    </div>
+    <div>
+        <label for="miss-penalty">Miss Penalty (cycles):</label>
+        <input type="number" id="miss-penalty" value="10" min="1">
+    </div>
+    <button onclick="simulateCache()">Simulate</button>
+    
+    <div class="result-display">
+        <h2>Simulation Results</h2>
+        <pre id="results"></pre>
+        <button onclick="saveResults()">Save Results</button>
     </div>
 
-    <script>
-        class LRUCache { 
-    constructor(n) { 
-        this.csize = n; 
-        this.dq = []; 
-        this.ma = new Map(); 
-    } 
-    
-    refer(x) { 
-        if (!this.ma.has(x)) { 
-            if (this.dq.length === this.csize) { 
-                const last = this.dq[this.dq.length - 1]; 
-                this.dq.pop(); 
-                this.ma.delete(last); 
-            } 
-        } else { 
-            this.dq.splice(this.dq.indexOf(x), 1); 
-        } 
-    
-        this.dq.unshift(x); 
-        this.ma.set(x, 0); 
-    } 
-    
-    display() { 
-        document.getElementById('cache-content').innerText = this.dq.join(', ');
-    } 
-} 
-
-let cache;
-
-function initializeCache() {
-    const size = document.getElementById('cache-size').value;
-    cache = new LRUCache(parseInt(size));
-    cache.display();
-}
-
-function referValue() {
-    const value = document.getElementById('cache-value').value;
-    if (cache) {
-        cache.refer(parseInt(value));
-        cache.display();
-    } else {
-        alert('Please initialize the cache first.');
-    }
-}
-
-// Initialize the cache with the default size on page load
-document.addEventListener('DOMContentLoaded', () => {
-    initializeCache();
-});
-    </script>
+    <script src = "./scripts/lru-cache.js"></script>
 </body>
 </html>
