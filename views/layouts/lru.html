@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRU Cache</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input, button {
+            margin: 5px;
+        }
+        .cache-display {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>LRU Cache</h1>
+    <div>
+        <label for="cache-size">Cache Size:</label>
+        <input type="number" id="cache-size" value="4" min="1">
+        <button onclick="initializeCache()">Initialize Cache</button>
+    </div>
+    <div>
+        <label for="cache-value">Refer Value:</label>
+        <input type="number" id="cache-value">
+        <button onclick="referValue()">Refer</button>
+    </div>
+    <div class="cache-display">
+        <h2>Cache Content</h2>
+        <pre id="cache-content"></pre>
+    </div>
+
+    <script>
+        class LRUCache { 
+    constructor(n) { 
+        this.csize = n; 
+        this.dq = []; 
+        this.ma = new Map(); 
+    } 
+    
+    refer(x) { 
+        if (!this.ma.has(x)) { 
+            if (this.dq.length === this.csize) { 
+                const last = this.dq[this.dq.length - 1]; 
+                this.dq.pop(); 
+                this.ma.delete(last); 
+            } 
+        } else { 
+            this.dq.splice(this.dq.indexOf(x), 1); 
+        } 
+    
+        this.dq.unshift(x); 
+        this.ma.set(x, 0); 
+    } 
+    
+    display() { 
+        document.getElementById('cache-content').innerText = this.dq.join(', ');
+    } 
+} 
+
+let cache;
+
+function initializeCache() {
+    const size = document.getElementById('cache-size').value;
+    cache = new LRUCache(parseInt(size));
+    cache.display();
+}
+
+function referValue() {
+    const value = document.getElementById('cache-value').value;
+    if (cache) {
+        cache.refer(parseInt(value));
+        cache.display();
+    } else {
+        alert('Please initialize the cache first.');
+    }
+}
+
+// Initialize the cache with the default size on page load
+document.addEventListener('DOMContentLoaded', () => {
+    initializeCache();
+});
+    </script>
+</body>
+</html>
