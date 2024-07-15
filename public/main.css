@@ -2,6 +2,11 @@ body {
     border: none !important;
     margin: 0;
     padding: 0;
+
+    font-family: "Source Code Pro", monospace;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
 }
 
 header {
@@ -20,6 +25,8 @@ main {
     padding: 20px; 
     margin: 0; 
     color: white;
+    font-size: small;
+    font-weight: lighter;
 }
 
 .header_1 {
@@ -42,16 +49,19 @@ main {
 }
 
 .header-text {
-    font-family: "Source Code Pro", monospace;
-    font-optical-sizing: auto;
-    font-weight: bold;
-    font-style: normal;
     font-size: 150%;
 }
 
 
 input, button {
     margin: 5px;
+    font-family: "Source Code Pro", monospace;
+    font-optical-sizing: auto;
+    font-style: normal;
+    
+}
+button{
+    margin: 0;
 }
 
 .result-display {
