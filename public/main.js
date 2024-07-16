@@ -1,23 +1,4 @@
-    
-    function navigateToPost(url) {
-        if(!event.target.classList.contains('up_vote') && !event.target.classList.contains('down_vote') && !event.target.classList.contains('delete-post-btn')) {
-            window.location.href = url;
-        }
-      }
-      function openForm() {
-            
-        document.getElementById("popup").style.display = "block";
-      }
-      
-      function closeForm() {
-        document.getElementById("popup").style.display = "none";
-      }
-
-      function handleDelete(event) {
-        event.stopPropagation();
-        openForm();
-    }
-    
+  
     class CacheSimulator {
         constructor(cacheSize, missPenalty) {
             this.cacheSize = cacheSize;
@@ -104,15 +85,17 @@
         simulator.simulate(programFlow);
     
         const results = simulator.getResults();
-        const resultsText = `
-        Cache Hits: ${results.hits}
-        Cache Misses: ${results.misses}
-        Miss Penalty: ${results.totalMissPenalty}
-        Average Memory Access Time: ${results.avgAccessTime.toFixed(2)} cycles
-        Total Memory Access Time: ${results.totalAccessTime} cycles
-        Cache Snapshot: ${results.cacheSnapshot.join('\n                        ')}
-        `;
+        const resultsText = 
+`Cache Hits: ${results.hits}
+Cache Misses: ${results.misses}
+Miss Penalty: ${results.totalMissPenalty}
+Average Memory Access Time: ${results.avgAccessTime.toFixed(2)} cycles
+Total Memory Access Time: ${results.totalAccessTime} cycles
+Cache Snapshot: \n     ${results.cacheSnapshot.join('\n     ')}`;
         document.getElementById('results').textContent = resultsText;
+
+        document.getElementById('result-display').style.display = 'block';
+        
     }
   
   function saveResults() {
