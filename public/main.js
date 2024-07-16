@@ -19,71 +19,101 @@
     }
     
     class CacheSimulator {
-      constructor(blockSize, mmSize, cacheSize, missPenalty) {
-          this.blockSize = blockSize;
-          this.mmSize = mmSize;
-          this.cacheSize = cacheSize;
-          this.missPenalty = missPenalty;
-          this.cache = new Map();
-          this.hits = 0;
-          this.misses = 0;
-          this.accessTime = 1;
-      }
-  
-      simulate(programFlow) {
-          programFlow.forEach(address => {
-              const blockAddress = Math.floor(address / this.blockSize);
-              if (this.cache.has(blockAddress)) {
-                  this.hits++;
-                  this.cache.delete(blockAddress);
-                  this.cache.set(blockAddress, true);
-              } else {
-                  this.misses++;
-                  if (this.cache.size == this.cacheSize) {
-                      this.cache.delete(this.cache.keys().next().value);
-                  }
-                  this.cache.set(blockAddress, true);
-              }
-          });
-      }
-  
-      getResults() {
-          const totalAccesses = this.hits + this.misses;
-          const totalMissPenalty = this.misses * this.missPenalty;
-          const totalAccessTime = totalAccesses + totalMissPenalty;
-          const avgAccessTime = totalAccessTime / totalAccesses;
-          return {
-              hits: this.hits,
-              misses: this.misses,
-              totalMissPenalty: totalMissPenalty,
-              avgAccessTime: avgAccessTime,
-              totalAccessTime: totalAccessTime,
-              cacheSnapshot: Array.from(this.cache.keys())
-          };
-      }
-  }
-  
-  function simulateCache() {
-      const blockSize = parseInt(document.getElementById('block-size').value);
-      const mmSize = parseInt(document.getElementById('mm-size').value);
-      const cacheSize = parseInt(document.getElementById('cache-size').value);
-      const programFlow = document.getElementById('program-flow').value.split(',').map(Number);
-      const missPenalty = parseInt(document.getElementById('miss-penalty').value);
-  
-      const simulator = new CacheSimulator(blockSize, mmSize, cacheSize, missPenalty);
-      simulator.simulate(programFlow);
-  
-      const results = simulator.getResults();
-      const resultsText = `
-          Cache Hits: ${results.hits}
-          Cache Misses: ${results.misses}
-          Miss Penalty: ${results.totalMissPenalty}
-          Average Memory Access Time: ${results.avgAccessTime.toFixed(2)} cycles
-          Total Memory Access Time: ${results.totalAccessTime} cycles
-          Cache Snapshot: ${results.cacheSnapshot.join(', ')}
-      `;
-      document.getElementById('results').textContent = resultsText;
-  }
+        constructor(cacheSize, missPenalty) {
+            this.cacheSize = cacheSize;
+            this.missPenalty = missPenalty;
+            this.cache = new Array(cacheSize).fill(null).map((_, index) => ({
+                mmBlock: null,
+                age: 0,
+                cacheBlock: index
+            }));
+            this.hits = 0;
+            this.misses = 0;
+        }
+    
+        simulate(programFlow) {
+            programFlow.forEach(mmBlock => {
+                let hit = false;
+    
+                // Check for hit
+                this.cache.forEach(block => {
+                    if (block.mmBlock === mmBlock) {
+                        hit = true;
+                        this.hits++;
+                        // Get the age of the accessed block
+                        const accessedAge = block.age;
+                        // Increment the age of blocks with age less than accessedAge
+                        this.cache.forEach(b => {
+                            if (b.age < accessedAge) {
+                                b.age++;
+                            }
+                        });
+                        // Reset the age of the accessed block
+                        block.age = 0;
+                    }
+                });
+    
+                // Handle miss
+                if (!hit) {
+                    this.misses++;
+                    // Find the oldest block to replace
+                    let oldestBlock = this.cache.reduce((oldest, block) => {
+                        return block.age > oldest.age ? block : oldest;
+                    }, this.cache[0]);
+    
+                    // Replace the oldest block with the new value
+                    oldestBlock.mmBlock = mmBlock;
+                    oldestBlock.age = 0;
+    
+                    // Increment the age of all other blocks
+                    this.cache.forEach(block => {
+                        if (block !== oldestBlock) {
+                            block.age++;
+                        }
+                    });
+                }
+            });
+        }
+    
+        getResults() {
+            const totalAccesses = this.hits + this.misses;
+            const totalMissPenalty = this.misses * this.missPenalty;
+            const totalAccessTime = totalAccesses + totalMissPenalty;
+            const avgAccessTime = totalAccessTime / totalAccesses;
+            const cacheSnapshot = this.cache.map(block => {
+                return `Cache Block: ${block.cacheBlock}, MM Block: ${block.mmBlock}`;
+            });
+    
+            return {
+                hits: this.hits,
+                misses: this.misses,
+                totalMissPenalty: totalMissPenalty,
+                avgAccessTime: avgAccessTime,
+                totalAccessTime: totalAccessTime,
+                cacheSnapshot: cacheSnapshot
+            };
+        }
+    }
+    
+    function simulateCache() {
+        const cacheSize = parseInt(document.getElementById('cache-size').value);
+        const programFlow = document.getElementById('program-flow').value.split(',').map(Number);
+        const missPenalty = parseInt(document.getElementById('miss-penalty').value);
+    
+        const simulator = new CacheSimulator(cacheSize, missPenalty);
+        simulator.simulate(programFlow);
+    
+        const results = simulator.getResults();
+        const resultsText = `
+        Cache Hits: ${results.hits}
+        Cache Misses: ${results.misses}
+        Miss Penalty: ${results.totalMissPenalty}
+        Average Memory Access Time: ${results.avgAccessTime.toFixed(2)} cycles
+        Total Memory Access Time: ${results.totalAccessTime} cycles
+        Cache Snapshot: ${results.cacheSnapshot.join('\n                        ')}
+        `;
+        document.getElementById('results').textContent = resultsText;
+    }
   
   function saveResults() {
       const resultsText = document.getElementById('results').textContent;
