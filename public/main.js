@@ -101,12 +101,12 @@ function simulateCache() {
 
     const results = simulator.getResults();
     const resultsText = 
-    `Cache Hits: ${results.hits}
-    Cache Misses: ${results.misses}
-    Miss Penalty: ${results.missPenalty} ns
-    Average Memory Access Time: ${results.avgAccessTime.toFixed(2)} ns
-    Total Memory Access Time: ${results.totalAccessTime} ns
-    Cache Snapshot: \n     ${results.cacheSnapshot.join('\n     ')}`;
+`Cache Hits: ${results.hits}
+Cache Misses: ${results.misses}
+Miss Penalty: ${results.missPenalty} ns
+Average Memory Access Time: ${results.avgAccessTime.toFixed(2)} ns
+Total Memory Access Time: ${results.totalAccessTime} ns
+Cache Snapshot: \n     ${results.cacheSnapshot.join('\n     ')}`;
     document.getElementById('results').textContent = resultsText;
 
     document.getElementById('result-display').style.display = 'block';
