@@ -79,34 +79,44 @@ class CacheSimulator {
     }
 }
 
-    function simulateCache() {
-        const cacheSize = parseInt(document.getElementById('cache-size').value);
-        const blockSize = parseInt(document.getElementById('block-size').value);
-        const programFlow = document.getElementById('program-flow').value.split(',').map(Number);
-        const cacheAccessTime = parseInt(document.getElementById('cache-access-time').value);
-        const memoryAccessTime = parseInt(document.getElementById('memory-access-time').value);
+let programFlow = [];
 
-        const simulator = new CacheSimulator(cacheSize, cacheAccessTime, memoryAccessTime, blockSize);
-        simulator.simulate(programFlow);
+function addProgramFlow() {
+    const mmBlock = parseInt(document.getElementById('program-flow-input').value);
+    if (!isNaN(mmBlock)) {
+        programFlow.push(mmBlock);
+        document.getElementById('program-flow-display').textContent = programFlow.join(', ');
+        document.getElementById('program-flow-input').value = '';
+    }
+}
 
-        const results = simulator.getResults();
-        const resultsText = 
+function simulateCache() {
+    const cacheSize = parseInt(document.getElementById('cache-size').value);
+    const blockSize = parseInt(document.getElementById('block-size').value);
+    const cacheAccessTime = parseInt(document.getElementById('cache-access-time').value);
+    const memoryAccessTime = parseInt(document.getElementById('memory-access-time').value);
+
+    const simulator = new CacheSimulator(cacheSize, cacheAccessTime, memoryAccessTime, blockSize);
+    simulator.simulate(programFlow);
+
+    const results = simulator.getResults();
+    const resultsText = 
     `Cache Hits: ${results.hits}
     Cache Misses: ${results.misses}
     Miss Penalty: ${results.missPenalty} ns
     Average Memory Access Time: ${results.avgAccessTime.toFixed(2)} ns
     Total Memory Access Time: ${results.totalAccessTime} ns
     Cache Snapshot: \n     ${results.cacheSnapshot.join('\n     ')}`;
-        document.getElementById('results').textContent = resultsText;
+    document.getElementById('results').textContent = resultsText;
 
-        document.getElementById('result-display').style.display = 'block';
-    }
+    document.getElementById('result-display').style.display = 'block';
+}
 
-    function saveResults() {
-        const resultsText = document.getElementById('results').textContent;
-        const blob = new Blob([resultsText], { type: 'text/plain' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'cache_simulation_results.txt';
-        link.click();
-    }
+function saveResults() {
+    const resultsText = document.getElementById('results').textContent;
+    const blob = new Blob([resultsText], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'cache_simulation_results.txt';
+    link.click();
+}
