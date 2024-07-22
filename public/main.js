@@ -11,10 +11,21 @@ class CacheSimulator {
         }));
         this.hits = 0;
         this.misses = 0;
+        this.simulatedFlow = [];
+        this.programFlow = [];
+        this.simulated = false;
+        this.visualizedSteps = 0; // Added to keep track of visualized steps
     }
 
-    simulate(programFlow) {
-        programFlow.forEach(mmBlock => {
+    addProgramFlow(mmBlock) {
+        this.programFlow.push(mmBlock);
+    }
+
+    simulate() {
+        const newSimulatedFlow = []; // Temporary storage for new simulation steps
+        const newProgramFlow = this.programFlow.slice(this.simulatedFlow.length);
+
+        newProgramFlow.forEach(mmBlock => {
             let hit = false;
 
             // Check for hit
@@ -54,7 +65,30 @@ class CacheSimulator {
                     }
                 });
             }
+
+            newSimulatedFlow.push({ mmBlock, hit });
         });
+
+        this.simulatedFlow = this.simulatedFlow.concat(newSimulatedFlow); // Append new steps to the simulated flow
+        this.simulated = true;
+    }
+
+    nextStep() {
+        if (this.simulatedFlow.length > 0) {
+            const step = this.simulatedFlow.shift();
+            const memoryBlockTable = document.getElementById('memory-block');
+            const newRow = memoryBlockTable.insertRow();
+            newRow.insertCell(0).textContent = step.mmBlock;
+            newRow.insertCell(1).textContent = step.hit ? 'Yes' : '';
+            newRow.insertCell(2).textContent = step.hit ? '' : 'Yes';
+            newRow.classList.add('highlight'); // Add highlight class to the new row
+
+            // Remove highlight from the previous row if any
+            if (memoryBlockTable.rows.length > 1) {
+                const previousRow = memoryBlockTable.rows[memoryBlockTable.rows.length - 2];
+                previousRow.classList.remove('highlight');
+            }
+        }
     }
 
     getResults() {
@@ -79,13 +113,13 @@ class CacheSimulator {
     }
 }
 
-let programFlow = [];
+let simulator = new CacheSimulator(4, 1, 10, 2); // Default values
 
 function addProgramFlow() {
     const mmBlock = parseInt(document.getElementById('program-flow-input').value);
     if (!isNaN(mmBlock)) {
-        programFlow.push(mmBlock);
-        document.getElementById('program-flow-display').textContent = programFlow.join(', ');
+        simulator.addProgramFlow(mmBlock);
+        document.getElementById('program-flow-display').textContent = simulator.programFlow.join(', ');
         document.getElementById('program-flow-input').value = '';
     }
 }
@@ -96,8 +130,15 @@ function simulateCache() {
     const cacheAccessTime = parseInt(document.getElementById('cache-access-time').value);
     const memoryAccessTime = parseInt(document.getElementById('memory-access-time').value);
 
-    const simulator = new CacheSimulator(cacheSize, cacheAccessTime, memoryAccessTime, blockSize);
-    simulator.simulate(programFlow);
+    if (!simulator.simulated) {
+        simulator = new CacheSimulator(cacheSize, cacheAccessTime, memoryAccessTime, blockSize);
+    }
+
+    const newProgramFlow = [...document.getElementById('program-flow-display').textContent.split(', ').map(Number)];
+    const newInputs = newProgramFlow.slice(simulator.programFlow.length);
+
+    newInputs.forEach(mmBlock => simulator.addProgramFlow(mmBlock));
+    simulator.simulate();
 
     const results = simulator.getResults();
     const resultsText = 
@@ -119,4 +160,19 @@ function saveResults() {
     link.href = URL.createObjectURL(blob);
     link.download = 'cache_simulation_results.txt';
     link.click();
+}
+
+function nextStep() {
+    if (!simulator || !simulator.simulated) {
+        alert('Please run the simulation first.');
+        return;
+    }
+    simulator.nextStep();
+}
+
+function resetSimulation() {
+    simulator = new CacheSimulator(4, 1, 10, 2); // Reset with default values
+    document.getElementById('program-flow-display').textContent = '';
+    document.getElementById('memory-block').innerHTML = '';
+    document.getElementById('result-display').style.display = 'none';
 }

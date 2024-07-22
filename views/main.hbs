@@ -45,7 +45,23 @@
                 </section>
             </div>
             <div class="simul">
-                DITO LAGAY MEMORY BLOCK AND CACHE BLOCK
+                <div class="box left-box">
+                    <h3>Memory Block</h3>
+                    <table class="memory-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Hit</th>
+                                <th>Miss</th>
+                            </tr>
+                        </thead>
+                        <tbody id="memory-block">
+                            <!-- Rows will be added here dynamically -->
+                        </tbody>
+                    </table>
+                    <button type="button" onclick="nextStep()">Next</button>
+                    <button type="button" onclick="resetSimulation()">Reset</button>
+                </div>
             </div>
         </div>
     </main>
