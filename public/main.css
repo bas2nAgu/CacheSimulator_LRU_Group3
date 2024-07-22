@@ -129,6 +129,7 @@ pre {
 .simul {
     width: 60%;
     margin-right: 0;
+    display:flex;
 }
 
 .simulation-body{
@@ -155,6 +156,40 @@ pre {
 
 #program-flow-display{
     font-size:10px;
+}
+
+.cache-block {
+    width: 40%;
+    overflow-x: auto;
+}
+
+#cache-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 8px; 
+    overflow: hidden; 
+}
+
+#cache-table th, #cache-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    color: black; 
+}
+
+#cache-table th {
+    background-color: #f4f4f4;
+    color: black; 
+}
+
+#cache-table td {
+    background-color: #ffffff;
+    color: black; 
+}
+
+#cache-table tr:nth-child(even) {
+    background-color: #f9f9f9;
 }
 
 .box {
