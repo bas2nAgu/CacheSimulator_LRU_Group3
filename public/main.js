@@ -74,20 +74,24 @@ class CacheSimulator {
     }
 
     nextStep() {
-        if (this.simulatedFlow.length > 0) {
-            const step = this.simulatedFlow.shift();
+        if (this.visualizedSteps < this.simulatedFlow.length) {
+            const step = this.simulatedFlow[this.visualizedSteps];
             const memoryBlockTable = document.getElementById('memory-block');
             const newRow = memoryBlockTable.insertRow();
             newRow.insertCell(0).textContent = step.mmBlock;
             newRow.insertCell(1).textContent = step.hit ? 'Yes' : '';
             newRow.insertCell(2).textContent = step.hit ? '' : 'Yes';
-            newRow.classList.add('highlight'); // Add highlight class to the new row
+
+            // Add highlight class to the new row
+            newRow.classList.add('highlight');
 
             // Remove highlight from the previous row if any
             if (memoryBlockTable.rows.length > 1) {
                 const previousRow = memoryBlockTable.rows[memoryBlockTable.rows.length - 2];
                 previousRow.classList.remove('highlight');
             }
+
+            this.visualizedSteps++; // Increment visualized steps count
         }
     }
 
